@@ -10,6 +10,8 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
+import minild.game.graphics.Colors;
+import minild.game.graphics.Screen;
 import minild.game.graphics.SpriteSheet;
 
 public class Game extends Canvas implements Runnable {
@@ -19,56 +21,60 @@ public class Game extends Canvas implements Runnable {
 	public static final int WIDTH = 160;
 	public static final int HEIGHT = WIDTH / 12 * 9;
 	public static final int SCALE = 3;
-	
+
 	private Thread thread;
-	
+
 	public JFrame frame;
-	
+
 	private boolean running = false;
-	
+
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-	private int[] colors = new int [6 * 6 * 6];
+	private int[] colors = new int[6 * 6 * 6];
 	
+	private Screen screen;
+
 	public Game() {
 		setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		setMaximumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-		
+
 		frame = new JFrame();
 	}
-	
+
 	public void init() {
 		int index = 0;
-		for(int r = 0; r < 6; r++) {
-			for(int g = 0; g < 6; g++) {
-				for(int b = 0; b < 6;b++) {
+		for (int r = 0; r < 6; r++) {
+			for (int g = 0; g < 6; g++) {
+				for (int b = 0; b < 6; b++) {
 					int rr = (r * 255 / 5);
-					int gg = (r * 255 / 5);
-					int bb = (r * 255 / 5);
-					colors[index++] = rr << 16 + gg << 8 + bb;
+					int gg = (g * 255 / 5);
+					int bb = (b * 255 / 5);
+					colors[index++] = rr << 16 | gg << 8 | bb;
 				}
 			}
 		}
+		
+		screen = new Screen(WIDTH, HEIGHT, SpriteSheet.tiles);
 	}
-	
+
 	public synchronized void start() {
 		running = true;
-		
+
 		thread = new Thread(this, NAME + "Display");
 		thread.start();
 	}
-	
+
 	public synchronized void stop() {
 		running = false;
-		
+
 		try {
 			thread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void run() {
 		init();
 		long lastTime = System.nanoTime();
@@ -77,19 +83,19 @@ public class Game extends Canvas implements Runnable {
 		double delta = 0;
 		int frames = 0;
 		int updates = 0;
-		while(running) {
+		while (running) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
-			while(delta >= 1) {
+			while (delta >= 1) {
 				update();
 				updates++;
 				delta--;
 			}
 			render();
 			frames++;
-			
-			if(System.currentTimeMillis() - timer > 1000) {
+
+			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				frame.setTitle(NAME + "   |   " + updates + " ups, " + frames + " fps");
 				updates = 0;
@@ -97,24 +103,40 @@ public class Game extends Canvas implements Runnable {
 			}
 		}
 	}
-	
+
 	public void update() {
 	}
-	
+
 	public void render() {
 		BufferStrategy bs = getBufferStrategy();
-		
-		if(bs == null) {
+
+		if (bs == null) {
 			createBufferStrategy(3);
 			return;
 		}
 		
+		screen.clear(0);
+		
+		for(int y = 0; y < 32; y++) {
+			for(int x = 0; x < 32; x++) {
+				screen.render(x << 3, y << 3, 0, Colors.get(505, 100, 555, 005));
+			}
+		}
+		
+		for(int y = 0; y < screen.height; y++) {
+			for(int x = 0; x < screen.width; x++) {
+				int colorCode = screen.pixels[x + y * screen.width];
+				if(colorCode < 255) pixels[x + y * WIDTH] = colors[colorCode];
+			}
+		}
+		
+
 		Graphics g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		g.dispose();
 		bs.show();
 	}
-	
+
 	public static void main(String[] args) {
 		Game game = new Game();
 		game.frame.setResizable(false);
