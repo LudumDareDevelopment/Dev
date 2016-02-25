@@ -33,6 +33,7 @@ public class Game extends Canvas implements Runnable {
 	private int[] colors = new int[6 * 6 * 6];
 	
 	private Screen screen;
+	private InputHandler input;
 
 	public Game() {
 		setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
@@ -56,6 +57,7 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		screen = new Screen(WIDTH, HEIGHT, SpriteSheet.tiles);
+		input = new InputHandler(this);
 	}
 
 	public synchronized void start() {
@@ -83,6 +85,7 @@ public class Game extends Canvas implements Runnable {
 		double delta = 0;
 		int frames = 0;
 		int updates = 0;
+		requestFocus();
 		while (running) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
@@ -105,6 +108,11 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public void update() {
+		input.update();
+		if(input.up) screen.yOffset--;
+		if(input.down) screen.yOffset++;
+		if(input.left) screen.xOffset--;
+		if(input.right) screen.xOffset++;
 	}
 
 	public void render() {
@@ -119,7 +127,7 @@ public class Game extends Canvas implements Runnable {
 		
 		for(int y = 0; y < 32; y++) {
 			for(int x = 0; x < 32; x++) {
-				screen.render(x << 3, y << 3, 0, Colors.get(505, 100, 555, 005));
+				screen.render(x << 3, y << 3, 0, Colors.get(555, 505, 055, 550), false, false);
 			}
 		}
 		
@@ -129,7 +137,6 @@ public class Game extends Canvas implements Runnable {
 				if(colorCode < 255) pixels[x + y * WIDTH] = colors[colorCode];
 			}
 		}
-		
 
 		Graphics g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
