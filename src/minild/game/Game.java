@@ -10,9 +10,10 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
-import minild.game.graphics.Colors;
 import minild.game.graphics.Screen;
 import minild.game.graphics.SpriteSheet;
+import minild.game.level.Level;
+import minild.game.level.tile.Tile;
 
 public class Game extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -34,6 +35,8 @@ public class Game extends Canvas implements Runnable {
 	
 	private Screen screen;
 	private InputHandler input;
+	
+	private Level level;
 
 	public Game() {
 		setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
@@ -58,6 +61,8 @@ public class Game extends Canvas implements Runnable {
 		
 		screen = new Screen(WIDTH, HEIGHT, SpriteSheet.tiles);
 		input = new InputHandler(this);
+		
+		level = new Level(128, 128);
 	}
 
 	public synchronized void start() {
@@ -106,13 +111,15 @@ public class Game extends Canvas implements Runnable {
 			}
 		}
 	}
-
+	
+	int xScroll = 0, yScroll = 0;
 	public void update() {
 		input.update();
-		if(input.up) screen.yOffset--;
-		if(input.down) screen.yOffset++;
-		if(input.left) screen.xOffset--;
-		if(input.right) screen.xOffset++;
+		Tile.updateCount++;
+		if(input.up) yScroll--;
+		if(input.down) yScroll++;
+		if(input.left) xScroll--;
+		if(input.right) xScroll++;
 	}
 
 	public void render() {
@@ -125,11 +132,7 @@ public class Game extends Canvas implements Runnable {
 		
 		screen.clear(0);
 		
-		for(int y = 0; y < 32; y++) {
-			for(int x = 0; x < 32; x++) {
-				screen.render(x << 3, y << 3, 0, Colors.get(555, 505, 055, 550), false, false);
-			}
-		}
+		level.render(xScroll, yScroll, screen);
 		
 		for(int y = 0; y < screen.height; y++) {
 			for(int x = 0; x < screen.width; x++) {
@@ -137,7 +140,7 @@ public class Game extends Canvas implements Runnable {
 				if(colorCode < 255) pixels[x + y * WIDTH] = colors[colorCode];
 			}
 		}
-
+	
 		Graphics g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		g.dispose();
