@@ -19,7 +19,7 @@ public class WaterTile extends Tile {
 	public void render(int x, int y, Screen screen, Level level) {
 		waterRandom.setSeed((updateCount + (x / 2 - y) * 4311) / 10 * 54687121l + x * 3271612l + y * 3412987161l);
 		int color = Colors.get(Level.waterColor, Level.waterColor, Level.waterColor + 111, Level.waterColor + 111);
-		int transitionColor1 = Colors.get(3, Level.waterColor, Level.dirtColor - 111, Level.dirtColor + 111);
+		int transitionColor1 = Colors.get(3, Level.waterColor, Level.dirtColor - 111, Level.dirtColor);
 		int transitionColor2 = Colors.get(3, Level.waterColor, Level.sandColor - 110, Level.sandColor);
 
 		boolean u = !level.getTile(x, y - 1).connectsToWater;

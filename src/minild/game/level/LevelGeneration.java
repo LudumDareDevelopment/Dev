@@ -112,6 +112,20 @@ public class LevelGeneration {
 				}
 			}
 		}
+		
+		for (int i = 0; i < width * height / 400; i++) {
+			int x = random.nextInt(width);
+			int y = random.nextInt(height);
+			for (int j = 0; j < 200; j++) {
+				int xx = x + random.nextInt(15) - random.nextInt(15);
+				int yy = y + random.nextInt(15) - random.nextInt(15);
+				if (xx >= 0 && yy >= 0 && xx < width && yy < height) {
+					if (map[xx + yy * width] == Tile.grass.id) {
+						map[xx + yy * width] = Tile.tree.id;
+					}
+				}
+			}
+		}
 
 		return map;
 	}

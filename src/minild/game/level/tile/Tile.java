@@ -11,6 +11,7 @@ public class Tile {
 	public static GrassTile grass = new GrassTile(0);
 	public static StoneTile stone = new StoneTile(1);
 	public static WaterTile water = new WaterTile(2);
+	public static TreeTile tree = new TreeTile(3);
 	
 	public final byte id;
 	

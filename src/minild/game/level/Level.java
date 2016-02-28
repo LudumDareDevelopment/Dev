@@ -8,7 +8,7 @@ public class Level {
 	protected int width, height;
 	protected byte[] tiles;
 
-	public static int grassColor = 131;
+	public static int grassColor = 242;
 	public static int stoneColor = 333;
 	public static int waterColor = 114;
 	public static int dirtColor = 322;
