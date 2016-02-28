@@ -10,9 +10,12 @@ public class GrassTile extends Tile {
 		super(id);
 	}
 	
-	public void render(int x, int y, Screen screen) {
+	public void render(int x, int y, Screen screen, Level level) {
 		int color = Colors.get(Level.grassColor, Level.grassColor, Level.grassColor + 111, Level.grassColor + 111);
-		screen.render(x << 3, y << 3, 1 + 0 * 32, color, (byte) 0x00);
+		screen.render(x << 4, y << 4, 0 + 0 * 32, color, (byte) 0x00);
+		screen.render((x << 4) + 8, y << 4, 0 + 0 * 32, color, (byte) 0x00);
+		screen.render(x << 4, (y << 4) + 8, 0 + 0 * 32, color, (byte) 0x00);
+		screen.render((x << 4) + 8, (y << 4) + 8, 0 + 0 * 32, color, (byte) 0x00);
 	}
 	
 	public boolean solid() {

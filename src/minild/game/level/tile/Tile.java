@@ -1,6 +1,7 @@
 package minild.game.level.tile;
 
 import minild.game.graphics.Screen;
+import minild.game.level.Level;
 
 public class Tile {
 	
@@ -13,13 +14,18 @@ public class Tile {
 	
 	public final byte id;
 	
+	public boolean connectsToGrass = false;
+	public boolean connectsToSand = false;
+	public boolean connectsToLava = false;
+	public boolean connectsToWater = false;
+	
 	public Tile(int id) {
 		this.id = (byte) id;
 		if(tiles[id] != null) System.err.println("Duplicate tile id at: " + id);
 		tiles[id] = this;
 	} 
 	
-	public void render(int x, int y, Screen screen) {
+	public void render(int x, int y, Screen screen, Level level) {
 	}
 	
 	public boolean solid() {

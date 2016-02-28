@@ -59,6 +59,24 @@ public class LevelGeneration {
 		} while(stepSize > 1);
 	}
 	
+	public static byte[] createAndValidateTopMap(int w, int h) {
+		int attempt = 0;
+		do {
+			byte[] result = createTopMap(w, h);
+
+			int[] count = new int[256];
+
+			for (int i = 0; i < w * h; i++) {
+				count[result[i] & 0xff]++;
+			}
+			if (count[Tile.stone.id & 0xff] < 100) continue;
+			if (count[Tile.grass.id & 0xff] < 100) continue;
+			return result;
+
+		} while (true);
+	}
+
+	
 	public static byte[] createTopMap(int width, int height) {
 		LevelGeneration mnoise1 = new LevelGeneration(width, height, 16);
 		LevelGeneration mnoise2 = new LevelGeneration(width, height, 16);

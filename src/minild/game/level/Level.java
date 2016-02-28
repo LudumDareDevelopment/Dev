@@ -11,7 +11,9 @@ public class Level {
 	public static int grassColor = 131;
 	public static int stoneColor = 333;
 	public static int waterColor = 114;
-
+	public static int dirtColor = 322;
+	public static int sandColor = 553;
+	
 	public Level(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -21,7 +23,7 @@ public class Level {
 	}
 
 	protected void generateLevel() {
-		tiles = LevelGeneration.createTopMap(width, height);
+		tiles = LevelGeneration.createAndValidateTopMap(width, height);
 	}
 
 	public void update() {
@@ -29,14 +31,14 @@ public class Level {
 
 	public void render(int xScroll, int yScroll, Screen screen) {
 		screen.setOffset(xScroll, yScroll);
-		int x0 = xScroll >> 3;
-		int x1 = ((xScroll + screen.width) >> 3) + 8;
-		int y0 = yScroll >> 3;
-		int y1 = ((yScroll + screen.height) >> 3) + 8;
+		int x0 = xScroll >> 4;
+		int x1 = ((xScroll + screen.width) >> 4) + 15;
+		int y0 = yScroll >> 4;
+		int y1 = ((yScroll + screen.height) >> 4) + 15;
 
 		for (int y = y0; y < y1; y++) {
 			for (int x = x0; x < x1; x++) {
-				getTile(x, y).render(x, y, screen);
+				getTile(x, y).render(x, y, screen, this);
 			}
 		}
 	}
