@@ -71,6 +71,7 @@ public class LevelGeneration {
 			}
 			if (count[Tile.stone.id & 0xff] < 100) continue;
 			if (count[Tile.grass.id & 0xff] < 100) continue;
+			if (count[Tile.tree.id & 0xff] < 100) continue;
 			return result;
 
 		} while (true);

@@ -10,6 +10,7 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
+import minild.game.entity.Player;
 import minild.game.graphics.Screen;
 import minild.game.graphics.SpriteSheet;
 import minild.game.level.Level;
@@ -37,6 +38,7 @@ public class Game extends Canvas implements Runnable {
 	private InputHandler input;
 	
 	private Level level;
+	private Player player;
 
 	public Game() {
 		setMinimumSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
@@ -63,6 +65,9 @@ public class Game extends Canvas implements Runnable {
 		input = new InputHandler(this);
 		
 		level = new Level(128, 128);
+		player = new Player(level, 0, 0, input);
+		player.findStartPos(level);
+		level.addEntity(player);
 	}
 
 	public synchronized void start() {
@@ -112,14 +117,10 @@ public class Game extends Canvas implements Runnable {
 		}
 	}
 	
-	int xScroll = 0, yScroll = 0;
 	public void update() {
 		input.update();
+		level.update();
 		Tile.updateCount++;
-		if(input.up) yScroll--;
-		if(input.down) yScroll++;
-		if(input.left) xScroll--;
-		if(input.right) xScroll++;
 	}
 
 	public void render() {
@@ -132,8 +133,10 @@ public class Game extends Canvas implements Runnable {
 		
 		screen.clear(0);
 		
+		int xScroll = player.x - (screen.width / 2);
+		int yScroll = player.y - (screen.height / 2);
 		level.render(xScroll, yScroll, screen);
-		
+		level.renderEntities(screen);
 		for(int y = 0; y < screen.height; y++) {
 			for(int x = 0; x < screen.width; x++) {
 				int colorCode = screen.pixels[x + y * screen.width];

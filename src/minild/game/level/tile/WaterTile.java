@@ -33,23 +33,23 @@ public class WaterTile extends Tile {
 		boolean sr = r && level.getTile(x + 1, y).connectsToSand;
 
 		if (!u && !l) {
-			screen.render(x * 16 + 0, y * 16 + 0, waterRandom.nextInt(4), color, (byte) waterRandom.nextInt(4));
+			screen.render((x << 4) + 0, (y << 4) + 0, waterRandom.nextInt(4), color, (byte) waterRandom.nextInt(4));
 		} else
-			screen.render(x * 16 + 0, y * 16 + 0, (l ? 14 : 15) + (u ? 0 : 1) * 32, (su || sl) ? transitionColor2 : transitionColor1, (byte) 0);
+			screen.render((x << 4) + 0, (y << 4) + 0, (l ? 14 : 15) + (u ? 0 : 1) * 32, (su || sl) ? transitionColor2 : transitionColor1, (byte) 0);
 
 		if (!u && !r) {
-			screen.render(x * 16 + 8, y * 16 + 0, waterRandom.nextInt(4), color, (byte) waterRandom.nextInt(4));
+			screen.render((x << 4) + 8, (y << 4) + 0, waterRandom.nextInt(4), color, (byte) waterRandom.nextInt(4));
 		} else
-			screen.render(x * 16 + 8, y * 16 + 0, (r ? 16 : 15) + (u ? 0 : 1) * 32, (su || sr) ? transitionColor2 : transitionColor1, (byte) 0);
+			screen.render((x << 4) + 8, (y << 4) + 0, (r ? 16 : 15) + (u ? 0 : 1) * 32, (su || sr) ? transitionColor2 : transitionColor1, (byte) 0);
 
 		if (!d && !l) {
-			screen.render(x * 16 + 0, y * 16 + 8, waterRandom.nextInt(4), color, (byte) waterRandom.nextInt(4));
+			screen.render((x << 4) + 0, (y << 4) + 8, waterRandom.nextInt(4), color, (byte) waterRandom.nextInt(4));
 		} else
-			screen.render(x * 16 + 0, y * 16 + 8, (l ? 14 : 15) + (d ? 2 : 1) * 32, (sd || sl) ? transitionColor2 : transitionColor1, (byte) 0);
+			screen.render((x << 4) + 0, (y << 4) + 8, (l ? 14 : 15) + (d ? 2 : 1) * 32, (sd || sl) ? transitionColor2 : transitionColor1, (byte) 0);
 		if (!d && !r) {
-			screen.render(x * 16 + 8, y * 16 + 8, waterRandom.nextInt(4), color, (byte) waterRandom.nextInt(4));
+			screen.render((x << 4) + 8, (y << 4) + 8, waterRandom.nextInt(4), color, (byte) waterRandom.nextInt(4));
 		} else
-			screen.render(x * 16 + 8, y * 16 + 8, (r ? 16 : 15) + (d ? 2 : 1) * 32, (sd || sr) ? transitionColor2 : transitionColor1, (byte) 0);
+			screen.render((x << 4) + 8, (y << 4) + 8, (r ? 16 : 15) + (d ? 2 : 1) * 32, (sd || sr) ? transitionColor2 : transitionColor1, (byte) 0);
 	}
 	
 	public boolean solid() {

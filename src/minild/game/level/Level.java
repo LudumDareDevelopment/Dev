@@ -1,12 +1,18 @@
 package minild.game.level;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import minild.game.entity.Entity;
 import minild.game.graphics.Screen;
 import minild.game.level.tile.Tile;
 
 public class Level {
 
-	protected int width, height;
+	public int width, height;
 	protected byte[] tiles;
+	
+	public List<Entity> entities = new ArrayList<Entity>();
 
 	public static int grassColor = 242;
 	public static int stoneColor = 333;
@@ -27,6 +33,9 @@ public class Level {
 	}
 
 	public void update() {
+		for(Entity e : entities) {
+			e.update();
+		}
 	}
 
 	public void render(int xScroll, int yScroll, Screen screen) {
@@ -43,9 +52,19 @@ public class Level {
 		}
 	}
 	
+	public void renderEntities(Screen screen) {
+		for(Entity e : entities) {
+			e.render(screen);
+		}
+	}
+	
 	public Tile getTile(int x, int y) {
 		if(x < 0 || x >= width || y < 0 || y >= height) return Tile.water;
 		return Tile.tiles[tiles[x + y * width]];
+	}
+
+	public void addEntity(Entity entity) {
+		this.entities.add(entity);
 	}
 	
 }
