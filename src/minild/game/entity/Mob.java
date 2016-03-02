@@ -10,6 +10,8 @@ public abstract class Mob extends Entity {
 	protected int numSteps;
 	protected boolean isMoving;
 	protected int movingDir = 1;
+	protected boolean isSwimming = false;
+	protected int swimmingCounter = 0;
 
 	public Mob(Level level, String name, int x, int y, int speed) {
 		super(level);this.name = name;
@@ -18,7 +20,20 @@ public abstract class Mob extends Entity {
 		this.speed = speed;
 	}
 	
+	public boolean findStartPos(Level level) {
+		while (true) {
+			int x = random.nextInt(level.width);
+			int y = random.nextInt(level.height);
+			if (level.getTile(x, y) == Tile.grass) {
+				this.x = x * 16 + 8;
+				this.y = y * 16 + 8;
+				return true;
+			}
+		}
+	}
+	
 	public void move(int xa, int ya) {
+		if(isSwimming && swimmingCounter % 2 == 0) return;
 		if(xa != 0 && ya != 0) {
 			move(xa, 0);
 			move(0, ya);

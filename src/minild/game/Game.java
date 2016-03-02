@@ -11,6 +11,7 @@ import java.awt.image.DataBufferInt;
 import javax.swing.JFrame;
 
 import minild.game.entity.Player;
+import minild.game.graphics.Colors;
 import minild.game.graphics.Screen;
 import minild.game.graphics.SpriteSheet;
 import minild.game.level.Level;
@@ -68,6 +69,7 @@ public class Game extends Canvas implements Runnable {
 		player = new Player(level, 0, 0, input);
 		player.findStartPos(level);
 		level.addEntity(player);
+		level.trySpawn(25);
 	}
 
 	public synchronized void start() {
@@ -118,6 +120,10 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	public void update() {
+		if (!hasFocus()) {
+			input.releaseAll();
+		}
+			
 		input.update();
 		level.update();
 		Tile.updateCount++;
@@ -132,11 +138,14 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		screen.clear(0);
-		
+	
 		int xScroll = player.x - (screen.width / 2);
 		int yScroll = player.y - (screen.height / 2);
 		level.render(xScroll, yScroll, screen);
 		level.renderEntities(screen);
+		
+		//if(!hasFocus()) renderFocusScreen();
+		
 		for(int y = 0; y < screen.height; y++) {
 			for(int x = 0; x < screen.width; x++) {
 				int colorCode = screen.pixels[x + y * screen.width];
@@ -148,6 +157,28 @@ public class Game extends Canvas implements Runnable {
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		g.dispose();
 		bs.show();
+	}
+	
+	private void renderFocusScreen() {
+		String msg = "Click to focus!";
+		int xx = (WIDTH - msg.length() * 8) / 2;
+		int yy = (HEIGHT - 8) / 2;
+		int w = msg.length();
+		int h = 1;
+
+		screen.render(xx - 8, yy - 8, 0 + 13 * 32, Colors.get(-1, 1, 5, 445), (byte) 0);
+		screen.render(xx + w * 8, yy - 8, 0 + 13 * 32, Colors.get(-1, 1, 5, 445), (byte) 1);
+		screen.render(xx - 8, yy + 8, 0 + 13 * 32, Colors.get(-1, 1, 5, 445), (byte) 2);
+		screen.render(xx + w * 8, yy + 8, 0 + 13 * 32, Colors.get(-1, 1, 5, 445), (byte) 3);
+		for (int x = 0; x < w; x++) {
+			screen.render(xx + x * 8, yy - 8, 1 + 13 * 32, Colors.get(-1, 1, 5, 445), (byte) 0);
+			screen.render(xx + x * 8, yy + 8, 1 + 13 * 32, Colors.get(-1, 1, 5, 445), (byte) 2);
+		}
+		for (int y = 0; y < h; y++) {
+			screen.render(xx - 8, yy + y * 8, 2 + 13 * 32, Colors.get(-1, 1, 5, 445), (byte) 0);
+			screen.render(xx + w * 8, yy + y * 8, 2 + 13 * 32, Colors.get(-1, 1, 5, 445), (byte) 1);
+		}
+
 	}
 
 	public static void main(String[] args) {

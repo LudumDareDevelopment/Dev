@@ -7,7 +7,7 @@ import minild.game.level.Level;
 
 public abstract class Entity {
 	
-	protected final Random random = new Random();
+	protected final static Random random = new Random();
 	public int x, y;
 	protected Level level;
 	

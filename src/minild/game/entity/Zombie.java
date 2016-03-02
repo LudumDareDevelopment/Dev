@@ -1,30 +1,56 @@
 package minild.game.entity;
 
-import minild.game.InputHandler;
+import java.util.List;
+
 import minild.game.graphics.Colors;
 import minild.game.graphics.Screen;
 import minild.game.level.Level;
+import minild.game.level.tile.Node;
 import minild.game.level.tile.Tile;
+import minild.game.util.Vector2i;
 
-public class Player extends Mob {
-
-	private InputHandler input;
-	private int color = Colors.get(000, 540, 543, -1);
+public class Zombie extends Mob {
+	
+	private int color = Colors.get(000, 131, 141, -1);
 	private int updateCount = 0;
+	
+	private List<Node> path = null;
 
-	public Player(Level level, int x, int y, InputHandler input) {
-		super(level, "Player", x, y, 1);
-		this.input = input;
+	public Zombie(Level level) {
+		super(level, "Zombie", random.nextInt(level.width), random.nextInt(level.height), 1);
+		level.addEntity(this);
 	}
-
+	
+	public boolean findStartPos(Level level) {
+		while (true) {
+			int x = random.nextInt(level.width);
+			int y = random.nextInt(level.height);
+			if (level.getTile(x, y) == Tile.grass) {
+				this.x = x * 16 + 8;
+				this.y = y * 16 + 8;
+				return true;
+			}
+		}
+	}
+	
 	public void update() {
 		int xa = 0;
 		int ya = 0;
-		if (input.up) ya--;
-		if (input.down) ya++;
-		if (input.left) xa--;
-		if (input.right) xa++;
-
+		
+		int px = level.entities.get(0).x;
+		int py = level.entities.get(0).y; 
+		Vector2i start = new Vector2i(x >> 4, y >> 4);
+		Vector2i destination = new Vector2i(px >> 4, py >> 4);
+		if((px - x) * (px - x) + (py - y) * (py - y) < 100 * 100 && updateCount % 20 == 0) path = level.findPath(start, destination);
+			if(path != null) {
+			if(path.size() > 0) {
+				Vector2i vec = path.get(path.size() - 1).tile;
+				if(x < vec.getX() << 4) xa++;
+				if(x > vec.getX() << 4) xa--;
+				if(y < vec.getY() << 4) ya++;
+				if(y > vec.getY() << 4) ya--;
+			}
+		}
 		if (xa != 0 || ya != 0) {
 			move(xa, ya);
 			isMoving = true;
@@ -89,7 +115,7 @@ public class Player extends Mob {
 	public boolean hasCollided(int xa, int ya) {
 		int xMin = 0;
 		int xMax = 7;
-		int yMin = 0;
+		int yMin = 3;
 		int yMax = 10;
 
 		for (int x = xMin; x < xMax; x++) {

@@ -30,4 +30,10 @@ public class InputHandler implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 	}
 
+	public void releaseAll() {
+		for(int i = 0; i < 120; i++) {
+			keys[i] = false;
+		}
+	}
+
 }
